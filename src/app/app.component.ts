@@ -1,6 +1,9 @@
 import { Component,OnInit,Output,Input,EventEmitter } from '@angular/core';
 import { Observable,Subject} from 'rxjs';
 import { locationService } from './location.service';
+import { map } from 'rxjs/operators';
+
+
 
 @Component({
   selector: 'app-root',
@@ -9,30 +12,25 @@ import { locationService } from './location.service';
 })
 
 export class AppComponent implements OnInit{
-  public locations:Observable<any[]>;
-  private searchTerms=new Subject<String>();
-  public LocationName='';
+  public locations:any[];
   public flag:boolean=true;
+  myPredictions = <any>[];
+  public LocationName:number;
+  private term:string;
   
   constructor(private locService:locationService){}
   
   ngOnInit():void{
-     this.locations=this.searchTerms.debounceTime(300).distinctUntilChanged().
-                    switchMap(term=>term?this.locService.search(term):Observable.of<any[]>([])).
-                    catch(error=>{
-                    console.log(error);
-                    return Observable.of<any[]>([]);
-                    });  
-                 }
-                 
- searchLocation(term:string):void{
-      this.flag=true;
-      this.searchTerms.next(term);
- }
- 
+            this.locService.search(this.term).subscribe(
+            data => {
+              this.locations = data;
+                    })
+                       
+  }        
+               
  onselectLocation(LocObj){
-     if(LocObj.LocId!=0){
-       this.LocationName=LocObj.LocationName;
+     if(LocObj.userId!=0){
+       this.LocationName=LocObj.userId;
        this.flag=false;
        }
      else{

@@ -8,7 +8,7 @@ import { locationService } from './location.service';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
   ],
   imports: [
     BrowserModule,
